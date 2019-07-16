@@ -76,9 +76,9 @@ def train_valid_dataset(dataset, batch_size, validation_ratio=0.2, shuffle=True)
     valid_sampler = SubsetRandomSampler(val_indices)
 
     train_loader = DataLoader(dataset, batch_size=batch_size, drop_last=True, \
-                                                num_workers=0, sampler=train_sampler)
+                                                num_workers=8, sampler=train_sampler)
     validation_loader = DataLoader(dataset, batch_size=batch_size, drop_last=True, \
-                                                num_workers=0, sampler=valid_sampler)
+                                                num_workers=8, sampler=valid_sampler)
     
     return train_loader, validation_loader
 

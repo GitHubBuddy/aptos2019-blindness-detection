@@ -2,6 +2,7 @@ import time
 import datetime
 import os
 import logging
+import pdb
 
 from timeit import default_timer as timer
 
@@ -52,7 +53,7 @@ def train(fold_index=3, num_classes=5, model_name='resnet101', checkPoint_start=
     
     #Training parameters:
     epoch = 0
-    iter_smooth = 200
+    iter_smooth = 100
     iter_valid = 200
     MAX_BATCH = 10000000
     
@@ -75,10 +76,10 @@ def train(fold_index=3, num_classes=5, model_name='resnet101', checkPoint_start=
     
     
     #Prepare the dataset:
-    dataset = BlindnessDataset(mode='train', transform=torch_transform)
+    dataset = BlindnessDataset(mode='train', transform=None)
     train_loader, validation_loader = train_valid_dataset(dataset, batch_size, 0.2, True)
     num_image = len(dataset)
-    iter_save = num_image//batch_size
+    iter_save = 2*num_image//batch_size
     
     
     #Initializa the losses:
@@ -88,7 +89,7 @@ def train(fold_index=3, num_classes=5, model_name='resnet101', checkPoint_start=
     train_loss_sum = 0
     iter_num = 0
     
-    i = 0  #batch index
+    i = 1  #batch index
     #If need to load the previous model:
     skips = []
     if not checkPoint_start == 0:
@@ -141,6 +142,7 @@ def train(fold_index=3, num_classes=5, model_name='resnet101', checkPoint_start=
                 }, resultDir + '/checkpoint/%08d_optimizer.pth' % (i))
 
             images, labels = batchdata
+#            pdb.set_trace()
 #            print(images.shape)
 #            N, H, W, C = images.shape
 #            images = images.view(N, C, H, W).float()
@@ -183,8 +185,8 @@ if __name__ == '__main__':
         freeze = False
         num_classes = 5
         model_name = 'resnet101'
-        fold_index = 1
-        checkPoint_start = 0
-        lr = 0.5e-4
+        fold_index = 3
+        checkPoint_start = 1824
+        lr = 0.2e-4
         batch_size = 32
         train(fold_index, num_classes, model_name, checkPoint_start, lr, batch_size)

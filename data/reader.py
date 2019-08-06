@@ -4,12 +4,12 @@ import pandas as pd
 from .transform import *
 
 #import math
-#import cv2
-import PIL.Image as Image
+import cv2
+#import PIL.Image as Image
 #import matplotlib.pyplot as plt
 import random
 #from tqdm import tqdm
-
+import torch
 from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler
 
 
@@ -47,10 +47,24 @@ class BlindnessDataset(Dataset):
             label = self.labels[index]
         else: label = None
         filename = self.filenames[index]
-        img = Image.open('./data/{}/{}.png'.format(self.mode, filename))
+#        img = Image.open('./data/{}/{}.png'.format(self.mode, filename))
+        img = cv2.imread('./data/{}_processed/{}.png'.format(self.mode, filename))
         if self.transform: img = self.transform(img)
-#        img = cv2.imread('./{}/{}.png'.format(self.mode, filename))
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+###define our own transform:
+#        img = circle_crop(img)
+#        height = width = 224
 #        img = cv2.resize(img, (height, width))
+        if random.randint(0,1)==1:
+            img = cv2.flip(img, 0)
+        angle = random.randint(0,359)
+        img = rotate(img, angle, center=None, scale=1.0)
+        #Rotation first and then GaussianBlur
+        img = cv2.addWeighted(img, 4, cv2.GaussianBlur(img , (0,0) , sigmaX=10) ,-4 ,128)
+###Convert to tensor:
+        img = torch.from_numpy(img.transpose((2, 0, 1)))
+        img = img.float().div(255)
+#        img = img.float().div(255).unsqueeze(0)
         return img, label
 
 
@@ -76,9 +90,9 @@ def train_valid_dataset(dataset, batch_size, validation_ratio=0.2, shuffle=True)
     valid_sampler = SubsetRandomSampler(val_indices)
 
     train_loader = DataLoader(dataset, batch_size=batch_size, drop_last=True, \
-                                                num_workers=8, sampler=train_sampler)
+                                                num_workers=16, sampler=train_sampler)
     validation_loader = DataLoader(dataset, batch_size=batch_size, drop_last=True, \
-                                                num_workers=8, sampler=valid_sampler)
+                                                num_workers=16, sampler=valid_sampler)
     
     return train_loader, validation_loader
 

@@ -2,6 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 from .transform import *
+import pdb
 
 #import math
 import cv2
@@ -15,27 +16,26 @@ from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler
 
 
 class BlindnessDataset(Dataset):
-    def __init__(self, mode='train', transform=None):
+    def __init__(self, datapath, mode='train', transform=None):
         super(BlindnessDataset, self).__init__()
-#        self.path = datapath
+        self.path = datapath
         self.mode = mode
         self.transform = transform
-        self.num_classes = 5
+#        self.num_classes = 5
         #load the excel file:
         if mode=='train':
-            images = pd.read_csv('./data/train.csv')
+            images = pd.read_csv(self.path + '/train.csv')
 #            images = pd.read_csv('train.csv')
             filenames = images['id_code'].tolist()
             labels = images['diagnosis'].tolist()
         else:
-            images = pd.read_csv('./data/test.csv')
+            images = pd.read_csv(self.path + '/test.csv')
 #            images = pd.read_csv('test.csv')
             filenames = images['id_code'].tolist()
             labels = None
         
         self.filenames = filenames
-        self.labels = labels
-    
+        self.labels = labels 
 
     
     def __len__(self):
@@ -48,7 +48,8 @@ class BlindnessDataset(Dataset):
         else: label = None
         filename = self.filenames[index]
 #        img = Image.open('./data/{}/{}.png'.format(self.mode, filename))
-        img = cv2.imread('./data/{}_processed/{}.png'.format(self.mode, filename))
+        img = cv2.imread(self.path + '/{}_processed/{}.png'.format(self.mode, filename))
+#        print(img.shape)
         if self.transform: img = self.transform(img)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 ###define our own transform:

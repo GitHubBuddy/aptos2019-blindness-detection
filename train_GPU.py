@@ -22,8 +22,11 @@ def crossentropyLoss(out, labels):
     return F.cross_entropy(out, labels)
 
 
-def mseLoss(out, labels):
-    return torch.nn.MSELoss(out, labels)
+def getLoss(out, labels):
+    out = torch.squeeze(out)
+    labels = labels.float()
+#    pdb.set_trace() 
+    return F.mse_loss(out, labels)
 
 
 def prediction(model, validation_loader, num_classes=5, batch_size=36):
@@ -38,7 +41,7 @@ def prediction(model, validation_loader, num_classes=5, batch_size=36):
             labels = labels.cuda()
             out = data_parallel(model, images)
 #            out = model(images)
-            valid_loss += mseLoss(out, labels)
+            valid_loss += getLoss(out, labels)
 ##Softmax Loss:
 #            scores = F.softmax(out, dim=1)
 #            _, results = torch.max(scores, 1)
@@ -52,7 +55,7 @@ def prediction(model, validation_loader, num_classes=5, batch_size=36):
 
 
 
-def train(fold_index=3, num_classes=1, model_name='resnet101', checkPoint_start=0, lr=3e-4, batch_size=36):
+def train(path, fold_index=1, num_classes=1, model_name='resnet101', checkPoint_start=0, lr=3e-4, batch_size=36):
     #Build the model:
     model = model_blindness(num_classes=1, inchannels=3, model_name=model_name).cuda()
     
@@ -67,12 +70,13 @@ def train(fold_index=3, num_classes=1, model_name='resnet101', checkPoint_start=
     # optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=0.9, weight_decay=0.0002)
     
     #Results and log:
-    resultDir = './result/{}_{}'.format(model_name, fold_index)
-    os.makedirs(resultDir,exist_ok=True)
-    ImageDir = resultDir + '/image'
+    resultDir = path + '/result/aptos2019-blindness-detection/{}_{}'.format(model_name, fold_index)
+    print(resultDir)
+    os.makedirs(resultDir, exist_ok=True)
+#    ImageDir = resultDir + '/image'
     checkPoint = os.path.join(resultDir, 'checkpoint')
     os.makedirs(checkPoint, exist_ok=True)
-    os.makedirs(ImageDir, exist_ok=True)
+#    os.makedirs(ImageDir, exist_ok=True)
     
     log = Logger()
     log.open(os.path.join(resultDir, 'log_train.txt'), mode= 'a')
@@ -81,7 +85,9 @@ def train(fold_index=3, num_classes=1, model_name='resnet101', checkPoint_start=
     
     
     #Prepare the dataset:
-    dataset = BlindnessDataset(mode='train', transform=None)
+    datapath = path + '/data/aptos2019-blindness-detection'
+    print(datapath)
+    dataset = BlindnessDataset(datapath, mode='train', transform=None)
     train_loader, validation_loader = train_valid_dataset(dataset, batch_size, 0.2, True)
     num_image = len(dataset)
     iter_save = 2*num_image//batch_size
@@ -188,10 +194,11 @@ if __name__ == '__main__':
     if 1:
         #os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3,5'
         freeze = False
-        num_classes = 5
+        num_classes = 1
         model_name = 'resnet101'
-        fold_index = 3
-        checkPoint_start = 1824
-        lr = 0.2e-4
+        fold_index = 2
+        checkPoint_start = 7980
+        lr = 0.5e-4
         batch_size = 32
-        train(fold_index, num_classes, model_name, checkPoint_start, lr, batch_size)
+        path = '/home/tfangml/KaggleCompetition'
+        train(path, fold_index, num_classes, model_name, checkPoint_start, lr, batch_size)

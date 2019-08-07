@@ -1,0 +1,40 @@
+ start_time :2019-08-07 01:01:05 
+ batch_size :32 
+ rate     iter   epoch |   valid   train   batch  |Accuracy  time          
+----------------------------------------------------------------------------
+ start_time :2019-08-07 01:04:02 
+ batch_size :32 
+ rate     iter   epoch |   valid   train   batch  |Accuracy  time          
+----------------------------------------------------------------------------
+ start_time :2019-08-07 01:06:18 
+ batch_size :32 
+ rate     iter   epoch |   valid   train   batch  |Accuracy  time          
+----------------------------------------------------------------------------
+ start_time :2019-08-07 01:09:02 
+ batch_size :32 
+ rate     iter   epoch |   valid   train   batch  |Accuracy  time          
+----------------------------------------------------------------------------
+ start_time :2019-08-07 01:11:30 
+ batch_size :32 
+ rate     iter   epoch |   valid   train   batch  |Accuracy  time          
+----------------------------------------------------------------------------
+ start_time :2019-08-07 01:12:55 
+ batch_size :32 
+ rate     iter   epoch |   valid   train   batch  |Accuracy  time          
+----------------------------------------------------------------------------
+ start_time :2019-08-07 01:14:10 
+ batch_size :32 
+ rate     iter   epoch |   valid   train   batch  |Accuracy  time          
+----------------------------------------------------------------------------
+ start_time :2019-08-07 01:16:12 
+ batch_size :32 
+ rate     iter   epoch |   valid   train   batch  |Accuracy  time          
+----------------------------------------------------------------------------
+ start_time :2019-08-07 01:21:10 
+ batch_size :32 
+ rate     iter   epoch |   valid   train   batch  |Accuracy  time          
+----------------------------------------------------------------------------
+ start_time :2019-08-07 01:23:19 
+ batch_size :32 
+ rate     iter   epoch |   valid   train   batch  |Accuracy  time          
+----------------------------------------------------------------------------

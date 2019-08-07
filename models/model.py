@@ -1,3 +1,4 @@
+import torch
 import torchvision.models as tvm
 import torch.nn as nn
 import torch.nn.functional as F
@@ -93,8 +94,8 @@ class model_blindness(nn.Module):
     def freeze(self):
         for param in self.basemodel.parameters():
             param.requires_grad = False
-#        for param in self.basemodel.layer4.parameters():
-#            param.requires_grad = True
+        for param in self.basemodel.layer4.parameters():
+            param.requires_grad = True
 
 
     def load_pretrain(self, pretrain_file, skip=[]):

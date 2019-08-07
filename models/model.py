@@ -7,7 +7,7 @@ import torch.nn.utils.weight_norm as weightNorm
 
 
 class model_blindness(nn.Module):
-    def __init__(self, num_classes=5, inchannels=3, model_name='resnet101'):
+    def __init__(self, num_classes=1, inchannels=3, model_name='resnet101'):
         super().__init__()
         planes = 512
         

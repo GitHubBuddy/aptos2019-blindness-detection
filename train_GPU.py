@@ -18,9 +18,12 @@ from utils import *
 
 
 
-def getLoss(out, labels):
+def crossentropyLoss(out, labels):
     return F.cross_entropy(out, labels)
 
+
+def mseLoss(out, labels):
+    return torch.nn.MSELoss(out, labels)
 
 
 def prediction(model, validation_loader, num_classes=5, batch_size=36):
@@ -35,21 +38,23 @@ def prediction(model, validation_loader, num_classes=5, batch_size=36):
             labels = labels.cuda()
             out = data_parallel(model, images)
 #            out = model(images)
-            valid_loss += getLoss(out, labels)
-            scores = F.softmax(out, dim=1)
-            _, results = torch.max(scores, 1)
-            correctpred += torch.sum(results==labels)
+            valid_loss += mseLoss(out, labels)
+##Softmax Loss:
+#            scores = F.softmax(out, dim=1)
+#            _, results = torch.max(scores, 1)
+#            correctpred += torch.sum(results==labels)
         
         valid_loss /= num_batch
-        accuracy = correctpred.float()/(num_batch*batch_size)
+#        accuracy = correctpred.float()/(num_batch*batch_size)
+        accuracy = 0
         return valid_loss, accuracy
 
 
 
 
-def train(fold_index=3, num_classes=5, model_name='resnet101', checkPoint_start=0, lr=3e-4, batch_size=36):
+def train(fold_index=3, num_classes=1, model_name='resnet101', checkPoint_start=0, lr=3e-4, batch_size=36):
     #Build the model:
-    model = model_blindness(num_classes=5, inchannels=3, model_name=model_name).cuda()
+    model = model_blindness(num_classes=1, inchannels=3, model_name=model_name).cuda()
     
     #Training parameters:
     epoch = 0
